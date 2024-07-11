@@ -20,7 +20,7 @@ An assignment school project
 
 ## Database Schema
 
-![image](https://github.com/Azizkhasyi11/oldshop/assets/74176356/f26a67ea-e3f3-4e0c-b9d8-58d6de47fc50)
+![image](https://github.com/Azizkhasyi11/oldshop/assets/74176356/ce3d98e2-3360-4b43-aec2-e5d24783963f)
 
 ## Authors
 
