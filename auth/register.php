@@ -1,6 +1,11 @@
 <?php
 session_start();
-require '../scripts/functions.php';
+require '../functions.php';
+
+if (isset($_SESSION['login'])) {
+  header('Location: /');
+  exit; 
+}
 
 if (isset($_POST["register"])) {
   if (register($_POST) > 0) {

@@ -8,19 +8,21 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link" href="#">Home</a>
+          <a class="nav-link" href="/">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Cart</a>
+          <a class="nav-link" href="cart.php">Cart</a>
         </li>
       </ul>
       <ul class="navbar-nav">
+        <?php if (!isset($_SESSION['login'])): ?>
         <li class="nav-item">
           <a class="nav-link" href="/auth/login.php">Login</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="/auth/register.php">Register</a>
         </li>
+        <?php endif; ?>
       </ul>
     </div>
   </div>

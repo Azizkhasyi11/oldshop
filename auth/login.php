@@ -1,28 +1,27 @@
 <?php
 session_start();
-require '../scripts/functions.php';
+require '../functions.php';
 
-// Check for cookies
+//cek cookie
 if (isset($_COOKIE['id']) && isset($_COOKIE['key'])) {
   $id = $_COOKIE['id'];
   $key = $_COOKIE['key'];
 
-  // Fetch username based on the ID
+  // ambil username == id
   $result = mysqli_query($conn, "SELECT username FROM users WHERE id = '$id'");
   $row = mysqli_fetch_assoc($result);
 
-  // Verify the cookie and username
+  // cek cookie and username
   if ($key === hash('sha256', $row['username'])) {
     $_SESSION['login'] = true;
   }
 }
 
-// if (isset($_SESSION['login'])) {
-//     header('Location: index.php');
-//     exit;
-// }
+if (isset($_SESSION['login'])){
+    header('Location: /');
+    exit;
+}
 
-$error = false;
 if (isset($_POST["login"])) {
   $username = $_POST["username"];
   $password = $_POST["password"];
@@ -30,17 +29,18 @@ if (isset($_POST["login"])) {
   $result = mysqli_query($conn, "SELECT * FROM users WHERE username = '$username'");
 
   if (mysqli_num_rows($result) === 1) {
-    // Verify the password
+    // cek password
     $row = mysqli_fetch_assoc($result);
     if (password_verify($password, $row["password"])) {
-      // Set session
+      // set session
       $_SESSION["login"] = true;
+      $_SESSION["user_id"] = $row["id"];
 
-      // Check for remember me option
+      // cek remember
       if (isset($_POST["remember"])) {
-        // Create cookies
-        setcookie('id', $row['id'], time() + 86400);
-        setcookie('key', hash('sha256', $row['username']), time() + 86400);
+        // create cookie
+        setcookie('id', $row['id'], time() + 60);
+        setcookie('key', hash('sha256', $row['username']), time() + 60);
       }
 
       header("Location: index.php");
@@ -58,70 +58,45 @@ if (isset($_POST["login"])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login Page</title>
-  <!-- Bootstrap CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <style>
+    label {
+      display: block;
+    }
+
+    label.remember {
+      display: inline;
+    }
+
+    p {
+      color: red;
+      font-style: italic;
+    }
+  </style>
 </head>
 
-<body class="d-flex flex-column min-vh-100" data-bs-theme="dark">
-  <div class="container my-5">
-    <h1 class="mb-4 text-center">Login</h1>
+<body>
+  <h1>Halaman Login</h1>
+  <p>Username / Password salah</p>
 
-    <?php if ($error): ?>
-      <div class="alert alert-danger" role="alert">
-        Username or Password is incorrect
-      </div>
-    <?php endif; ?>
-
-    <form action="" method="post" class="needs-validation border p-5 rounded" novalidate>
-      <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
-        <input type="text" name="username" id="username" class="form-control" required>
-        <div class="invalid-feedback">
-          Please enter your username.
-        </div>
-      </div>
-      <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input type="password" name="password" id="password" class="form-control" required>
-        <div class="invalid-feedback">
-          Please enter your password.
-        </div>
-      </div>
-      <div class="form-check mb-3">
-        <input type="checkbox" name="remember" id="remember" class="form-check-input">
-        <label for="remember" class="form-check-label">Remember Me</label>
-      </div>
-      <button type="submit" name="login" class="btn btn-primary">Login</button>
-      <a href="register.php" class="btn btn-secondary">Register</a>
-    </form>
-  </div>
-
-  <!-- Bootstrap JS Bundle -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"></script>
-
-  <script>
-    // Bootstrap form validation
-    (function () {
-      'use strict'
-
-      var forms = document.querySelectorAll('.needs-validation')
-
-      Array.prototype.slice.call(forms)
-        .forEach(function (form) {
-          form.addEventListener('submit', function (event) {
-            if (!form.checkValidity()) {
-              event.preventDefault()
-              event.stopPropagation()
-            }
-
-            form.classList.add('was-validated')
-          }, false)
-        })
-    })()
-  </script>
+  <form action="" method="post">
+    <ul>
+      <li>
+        <label for="username">Username :</label>
+        <input type="text" name="username" id="username">
+      </li>
+      <li>
+        <label for="password">Password :</label>
+        <input type="password" name="password" id="password">
+      </li>
+      <li>
+        <input type="checkbox" name="remember" id="remember">
+        <label for="remember" class="remember">Remember Me</label>
+      </li>
+      <li>
+        <button type="submit" name="login">Login</button>
+      </li>
+    </ul>
+  </form>
 </body>
 
 </html>
