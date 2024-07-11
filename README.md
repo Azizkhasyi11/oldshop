@@ -18,6 +18,10 @@ An assignment school project
 | User can checkout                 | Work in Progress |
 | User role                         | Work in Progress |
 
+## Database Schema
+
+![image](https://github.com/Azizkhasyi11/oldshop/assets/74176356/f26a67ea-e3f3-4e0c-b9d8-58d6de47fc50)
+
 ## Authors
 
 - [@azizkhasyi11](https://github.com/Azizkhasyi11)
