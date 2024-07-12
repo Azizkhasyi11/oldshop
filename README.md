@@ -17,9 +17,11 @@ An assignment school project
 | User can remove product from cart | Done             |
 | User can checkout                 | Work in Progress |
 | User role                         | Work in Progress |
+| CRUD product                      | Work in Progress |
 
 ## Database Schema
 
+Database dump can be found in `database` folder
 ![image](https://github.com/Azizkhasyi11/oldshop/assets/74176356/ce3d98e2-3360-4b43-aec2-e5d24783963f)
 
 ## Authors

@@ -4,7 +4,7 @@ require '../functions.php';
 
 if (isset($_SESSION['login'])) {
   header('Location: /');
-  exit; 
+  exit;
 }
 
 if (isset($_POST["register"])) {

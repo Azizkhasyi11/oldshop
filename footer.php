@@ -27,7 +27,8 @@
     </div>
     <div class="row">
       <div class="col-12 text-center">
-        <p class="mb-0">© 2024 OldShop. All rights reserved.</p>
+        <p class="mb-0">© 2024 <a href="http://github.com/Azizkhasyi11" target="_blank" rel="noopener noreferrer"
+            class="text-white">Azizkhasyi11</a>. All rights reserved.</p>
       </div>
     </div>
   </div>

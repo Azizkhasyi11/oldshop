@@ -34,21 +34,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     foreach ($products as $row): ?>
       <div class="col-md-4">
         <div class="card">
-          <img src="<?= $row['image'] ?>" class="card-img-top" alt="Product Image 1"
-            onerror="this.src='https://via.placeholder.com/150'">
+          <div class="card-img-container">
+            <img src="assets/<?= $row['image'] ?>" class="card-img-top img-1-1" alt="Product Image 1"
+              onerror="this.src='https://via.placeholder.com/150'">
+          </div>
           <div class="card-body">
-            <h5 class="card-title"><?= $row['name'] ?></h5>
+            <h5 class="card-title"><a href="detail.php?id=<?= $row['id'] ?>" class="text-white"><?= $row['name'] ?></a></h5>
             <p class="card-text"><?= $row['description'] ?></p>
             <p class="card-text"><strong>Rp. <?= number_format($row['price']) ?></strong></p>
 
-            <!-- Form to add product to cart -->
-            <form action="" method="post">
-              <input type="hidden" name="product_id" value="<?= $row['id'] ?>">
-              <input type="hidden" name="quantity" value="1"> <!-- Default quantity set to 1 -->
-              <button type="submit" class="btn btn-primary">Buy Now</button>
-            </form>
+            <div class="d-flex-column gap-1">
 
-            <a class="btn btn-secondary" href="detail.php?id=<?= $row['id'] ?>">Detail</a>
+              <!-- Form to add product to cart -->
+              <form action="" method="post" class="d-flex flex-column gap-4 mb-3 w-100">
+                <input type="hidden" name="product_id" value="<?= $row['id'] ?>">
+                <div class="d-flex gap-2">
+                  <label for="quantity">Quantity:</label>
+                  <input type="number" name="quantity" class="form-control" id="quantity" value="1">
+                  <!-- Default quantity set to 1 -->
+                </div>
+                <button type="submit" class="btn btn-primary">Buy Now</button>
+              </form>
+
+              <a class="btn btn-success" href="/product/edit.php?id=<?= $row['id'] ?>">Edit</a>
+              <a class="btn btn-danger" href="/product/remove.php?id=<?= $row['id'] ?>">Remove</a>
+            </div>
           </div>
         </div>
       </div>

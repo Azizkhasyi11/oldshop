@@ -4,10 +4,14 @@ require 'scripts/database/DBController.php';
 
 require 'scripts/Product.php';
 
+require 'scripts/Cart.php';
+
 $db = new DBController();
 
 $product = new Products($db);
 $products = $product->getData();
+
+$cart = new Cart();
 
 $host = 'localhost';
 $usernames = 'root';
@@ -74,7 +78,7 @@ function register($data)
     $password = password_hash($password, PASSWORD_DEFAULT);
 
     // Insert user data
-    mysqli_query($conn, "INSERT INTO users VALUES(NULL, '$firstname', '$lastname', '$username',  '$password', '$register_date')");
+    mysqli_query($conn, "INSERT INTO users VALUES(NULL, '$firstname', '$lastname', '$username',  '$password', '$register_date', NULL)");
 
     return mysqli_affected_rows($conn);
 }
@@ -167,22 +171,19 @@ function addToCart($data)
 
     // Check if product is already in cart
     if (isset($_SESSION['cart'][$user_id][$product_id])) {
-        echo "
-        <script>
-            alert('Product sudah ada di cart');
-        </script>
-        ";
-        return false;
+        // Update the quantity of the existing product in the cart
+        $_SESSION['cart'][$user_id][$product_id]['quantity'] += $quantity;
+    } else {
+        // Add new product to cart
+        $_SESSION['cart'][$user_id][$product_id] = [
+            'product_id' => $product_id,
+            'quantity' => $quantity,
+        ];
     }
-
-    // Add product to cart
-    $_SESSION['cart'][$user_id][$product_id] = [
-        'product_id' => $product_id,
-        'quantity' => $quantity,
-    ];
 
     return true;
 }
+
 
 function removeFromCart($data)
 {
@@ -230,3 +231,47 @@ function getCartTotal($user_id)
     return $total;
 }
 
+function uploadImage($file, $target_dir = "assets/uploads/")
+{
+    $imageFileType = strtolower(pathinfo($file["name"], PATHINFO_EXTENSION));
+    $filename = time() . '.' . $imageFileType;
+    $target_file = $target_dir . $filename;
+    $uploadOk = 1;
+
+    // Check if image file is an actual image or fake image
+    $check = getimagesize($file["tmp_name"]);
+    if ($check !== false) {
+        $uploadOk = 1;
+    } else {
+        echo "File is not an image.";
+        $uploadOk = 0;
+    }
+
+    // Check file size
+    if ($file["size"] > 500000) { // 500KB
+        echo "Sorry, your file is too large.";
+        $uploadOk = 0;
+    }
+
+    // Allow certain file formats
+    if (
+        $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+        && $imageFileType != "gif"
+    ) {
+        echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+        $uploadOk = 0;
+    }
+
+    // Check if $uploadOk is set to 0 by an error
+    if ($uploadOk == 0) {
+        echo "Sorry, your file was not uploaded.";
+        return false;
+    } else {
+        if (move_uploaded_file($file["tmp_name"], $target_file)) {
+            return "uploads/" . $filename; // Return the file path relative to the uploads directory
+        } else {
+            echo "Sorry, there was an error uploading your file.";
+            return false;
+        }
+    }
+}

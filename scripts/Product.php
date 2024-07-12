@@ -50,4 +50,61 @@ class Products
     return null;
   }
 
+  // add a new product
+  public function addProduct($params = [], $table = 'products')
+  {
+    if (!empty($params)) {
+      // Extract keys and values from the params array
+      $columns = implode(', ', array_keys($params));
+      $placeholders = implode(', ', array_fill(0, count($params), '?'));
+      $values = array_values($params);
+
+      // Prepare statement to prevent SQL injection
+      $stmt = $this->db->con->prepare("INSERT INTO {$table} ({$columns}) VALUES ({$placeholders})");
+
+      // Create a dynamic call to bind_param
+      $types = str_repeat('s', count($values)); // assuming all fields are strings
+      $stmt->bind_param($types, ...$values);
+
+      // Execute the statement
+      $stmt->execute();
+    }
+  }
+
+  // update a product
+  public function updateProduct($item_id = null, $params = [], $table = 'products')
+  {
+    if (isset($item_id) && !empty($params)) {
+      $setClause = '';
+      $values = [];
+
+      foreach ($params as $key => $value) {
+        $setClause .= "{$key} = ?, ";
+        $values[] = $value;
+      }
+      $setClause = rtrim($setClause, ', ');
+      $values[] = $item_id;
+
+      // Prepare statement to prevent SQL injection
+      $stmt = $this->db->con->prepare("UPDATE {$table} SET {$setClause} WHERE id = ?");
+
+      // Create a dynamic call to bind_param
+      $types = str_repeat('s', count($values) - 1) . 'i'; // assuming all fields are strings except id
+      $stmt->bind_param($types, ...$values);
+
+      // Execute the statement
+      $stmt->execute();
+    }
+  }
+
+  // delete a product
+  public function deleteProduct($item_id = null, $table = 'products')
+  {
+    if (isset($item_id)) {
+      // Prepare statement to prevent SQL injection
+      $stmt = $this->db->con->prepare("DELETE FROM {$table} WHERE id = ?");
+      $stmt->bind_param("i", $item_id);
+      $stmt->execute();
+    }
+  }
 }
