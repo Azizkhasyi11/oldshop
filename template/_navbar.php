@@ -10,9 +10,11 @@
         <li class="nav-item">
           <a class="nav-link" href="/">Home</a>
         </li>
+        <?php if (isset($_SESSION['login'])): ?>
         <li class="nav-item">
-          <a class="nav-link" href="cart.php">Cart</a>
+          <a class="nav-link" href="/cart.php">Cart</a>
         </li>
+        <?php endif; ?>
       </ul>
       <ul class="navbar-nav">
         <?php if (!isset($_SESSION['login'])): ?>
@@ -23,7 +25,7 @@
             <a class="nav-link" href="/auth/register.php">Register</a>
           </li>
         <?php else: ?>
-          <?php if (!$_SESSION['admin']): ?>
+          <?php if ($_SESSION['admin']): ?>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Admin
@@ -37,6 +39,12 @@
           <li class="nav-item">
             <a class="nav-link" href="/auth/logout.php">Logout</a>
           </li>
+        <?php endif; ?>
+        <?php if (basename($_SERVER['PHP_SELF']) !== 'search.php'): ?>
+          <form class="d-flex" role="search" action="search.php" method="get">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
         <?php endif; ?>
       </ul>
     </div>

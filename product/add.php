@@ -2,6 +2,11 @@
 ob_start();
 include '../header.php';
 
+if ($_SESSION['admin'] !== true) {
+  header('Location: /');
+  exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   // var_dump($_POST, $_FILES); die;
   $product_name = $_POST['product_name'];

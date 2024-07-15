@@ -217,6 +217,7 @@ function getCart($user_id)
 
 function getCartTotal($user_id)
 {
+    global $product;
     $cart = getCart($user_id);
     $total = 0;
 
@@ -224,11 +225,11 @@ function getCartTotal($user_id)
         $product_id = $product['product_id'];
         $quantity = $product['quantity'];
 
-        $product = getProduct($product_id);
-        $total += $product['price'] * $quantity;
+        $detail = getProduct($product_id);
+        $total += $detail['price'] * $quantity;
     }
 
-    return $total;
+    return isset($total) ? $total : 0;
 }
 
 function uploadImage($file, $target_dir = "assets/uploads/")
@@ -274,4 +275,28 @@ function uploadImage($file, $target_dir = "assets/uploads/")
             return false;
         }
     }
+}
+
+function excerpt($text, $length = 100)
+{
+    $text = strip_tags($text);
+    if (strlen($text) > $length) {
+        $text = substr($text, 0, $length);
+        $text = substr($text, 0, strrpos($text, " "));
+        $text .= '...';
+    }
+    return $text;
+}
+
+// is admin check
+function isAdmin()
+{
+    if (isset($_SESSION['login'])) {
+        global $conn;
+        $user_id = $_SESSION['user_id'];
+        $result = mysqli_query($conn, "SELECT * FROM users WHERE id = $user_id");
+        $user = mysqli_fetch_assoc($result);
+        return $user['is_admin'] == true;
+    }
+    return false;
 }

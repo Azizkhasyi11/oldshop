@@ -9,7 +9,16 @@ $id = 1;
 //   exit;
 // }
 
-$product = $product->getProduct($id);
+$product = $product->deleteProduct($id);
+
+// Using alert
+if ($product) {
+  echo "<script>alert('Product deleted successfully')</script>";
+  echo "<script>window.location = '/'</script>";
+} else {
+  echo "<script>alert('Product deletion failed')</script>";
+  echo "<script>window.location = '/'</script>";
+}
 ?>
 
 

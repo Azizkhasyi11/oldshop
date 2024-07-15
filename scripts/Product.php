@@ -82,8 +82,12 @@ class Products
         $setClause .= "{$key} = ?, ";
         $values[] = $value;
       }
-      $setClause = rtrim($setClause, ', ');
+
+      // Add updated_at to params
+      $setClause .= "updated_at = CURRENT_TIMESTAMP, ";
       $values[] = $item_id;
+
+      $setClause = rtrim($setClause, ', ');
 
       // Prepare statement to prevent SQL injection
       $stmt = $this->db->con->prepare("UPDATE {$table} SET {$setClause} WHERE id = ?");
@@ -97,14 +101,47 @@ class Products
     }
   }
 
+
   // delete a product
   public function deleteProduct($item_id = null, $table = 'products')
   {
     if (isset($item_id)) {
+      // Remove the image too
+      $product = $this->getProduct($item_id);
+      $image = $product['image'];
+      unlink('assets/' . $image);
+
       // Prepare statement to prevent SQL injection
       $stmt = $this->db->con->prepare("DELETE FROM {$table} WHERE id = ?");
       $stmt->bind_param("i", $item_id);
       $stmt->execute();
+      return $stmt->affected_rows;
     }
+
+    return null;
+  }
+
+  // search product
+  public function searchProduct($search = null, $table = 'products')
+  {
+    if (isset($search)) {
+      // Prepare statement to prevent SQL injection
+      $stmt = $this->db->con->prepare("SELECT * FROM {$table} WHERE name LIKE ?");
+      $search = "%$search%";
+      $stmt->bind_param("s", $search);
+      $stmt->execute();
+      $result = $stmt->get_result();
+
+      $resultArray = [];
+
+      // fetch product data one by one
+      while ($item = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+        $resultArray[] = $item;
+      }
+
+      return $resultArray;
+    }
+
+    return null;
   }
 }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jul 12, 2024 at 07:09 AM
+-- Generation Time: Jul 15, 2024 at 01:33 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.7
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `oldshop`
 --
-CREATE DATABASE IF NOT EXISTS `oldshop` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
-USE `oldshop`;
 
 -- --------------------------------------------------------
 
@@ -34,8 +32,10 @@ CREATE TABLE `products` (
   `name` varchar(255) NOT NULL,
   `description` text NOT NULL,
   `image` varchar(255) NOT NULL,
-  `price` varchar(255) DEFAULT NULL,
-  `stock` int DEFAULT NULL
+  `price` decimal(10,2) DEFAULT '0.00',
+  `stock` int DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------

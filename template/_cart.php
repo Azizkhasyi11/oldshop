@@ -1,4 +1,5 @@
 <?php
+
 $user_id = $_SESSION['user_id'] ?? null;
 
 if (!$user_id) {
@@ -7,7 +8,7 @@ if (!$user_id) {
         alert('Please log in to view your cart.');
         window.location.href = '/auth/login.php';
     </script>
-    ";
+  ";
   exit;
 }
 
@@ -27,16 +28,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 }
 ?>
 
-<div class="container">
-  <h2>Your Cart</h2>
+<div class="container mt-5">
+  <h2 class="mb-4">Your Cart</h2>
   <?php if (empty($cartItems)): ?>
-    <p>Your cart is empty.</p>
+    <hr>
+    <div class="alert alert-warning" role="alert">
+      Your cart is empty.
+    </div>
   <?php else: ?>
     <div class="table-responsive">
-
-      <table class="table">
+      <table class="table table-hover">
         <thead>
           <tr>
+            <th>No</th>
             <th>Product</th>
             <th>Price</th>
             <th>Quantity</th>
@@ -44,37 +48,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             <th>Action</th>
           </tr>
         </thead>
-        <tbody>
-          <?php 
+        <tbody class="table-group-divider">
+          <?php
           $i = 0;
           foreach ($cartItems as $item):
             $product = getProduct($item['product_id']);
             ?>
             <tr>
-              <td><a href="detail.php?id=<?= $product['id'] ?>" class="text-white"><?php echo $product['name']; ?></a></td>
-              <td><?php echo 'Rp.' . number_format($product['price'], 2); ?></td>
-              <td><?php echo $item['quantity']; ?></td>
-              <td><?php echo 'Rp. ' . number_format($product['price'] * $item['quantity'], 2); ?></td>
+              <td class="align-middle"><?= $i + 1 ?></td>
+              <td>
+                <a href="detail.php?id=<?= htmlspecialchars($product['id']) ?>" class="text-white fw-bold">
+                  <?= htmlspecialchars($product['name']) ?>
+                </a>
+              </td>
+              <td><?= 'Rp. ' . number_format($product['price'], 2) ?></td>
+              <td><?= htmlspecialchars($item['quantity']) ?></td>
+              <td><?= 'Rp. ' . number_format($product['price'] * $item['quantity'], 2) ?></td>
               <td>
                 <form method="post">
-                  <input type="hidden" name="product_id" value="<?php echo $item['product_id']; ?>">
+                  <input type="hidden" name="product_id" value="<?= htmlspecialchars($item['product_id']) ?>">
                   <input type="hidden" name="action" value="remove">
-                  <button type="submit" class="btn btn-danger">Remove</button>
+                  <button type="submit" class="btn btn-danger btn-sm">Remove</button>
                 </form>
               </td>
             </tr>
-          <?php 
-        $i++;
-        endforeach; ?>
+            <?php
+            $i++;
+          endforeach; ?>
         </tbody>
       </table>
     </div>
-    <div class="cart-total mt-3">
-      <h3 class="m-0">Total: <?php echo '$' . number_format($total, 2); ?></h3>
-      <h6 class="text-secondary">Item total: <?= $i ?></h6>
-    </div>
-    <div class="cart-actions">
-      <a href="checkout.php" class="btn btn-primary">Proceed to Checkout</a>
-    </div>
   <?php endif; ?>
+  <div class="cart-total mt-3">
+    <h3 class="m-0">Total: <?= 'Rp. ' . number_format($total, 2) ?></h3>
+    <span class="text-secondary fs-6">Item total: <?= isset($i) ? $i : 0 ?></span>
+  </div>
+  <div class="cart-actions mt-3">
+    <a href="checkout.php" class="btn btn-primary">Proceed to Checkout</a>
+  </div>
 </div>
+
+<?php
+include 'footer.php';
+?>
