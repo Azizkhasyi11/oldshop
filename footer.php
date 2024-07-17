@@ -6,14 +6,14 @@
     <div class="row">
       <div class="col-md-4 mb-3">
         <h5>OldShop</h5>
-        <p>OldShop is a simple e-commerce website that sells old stuff.</p>
+        <p>OldShop is a simple e-commerce website that sells hobbies stuff.</p>
       </div>
       <div class="col-md-4 mb-3">
         <h5>Links</h5>
         <ul class="list-unstyled">
-          <li><a href="#" class="text-white text-decoration-none">Home</a></li>
-          <li><a href="#" class="text-white text-decoration-none">About</a></li>
-          <li><a href="#" class="text-white text-decoration-none">Contact</a></li>
+          <li><a href="/" class="text-white text-decoration-none">Home</a></li>
+          <li><a href="/about.php" class="text-white text-decoration-none">About</a></li>
+          <li><a href="/contact.php" class="text-white text-decoration-none">Contact</a></li>
         </ul>
       </div>
       <div class="col-md-4 mb-3">

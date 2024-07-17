@@ -65,7 +65,8 @@ if (isset($_POST["login"])) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login Page</title>
+  <link rel="icon" href="../assets/img/halo.webp">
+  <title>OldShop | Login Page</title>
   <!-- Bootstrap CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -76,8 +77,8 @@ if (isset($_POST["login"])) {
     <h1 class="mb-4 text-center">Login</h1>
     <form action="" method="post" class="needs-validation border p-2-md p-5 rounded" novalidate>
       <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
-        <input type="text" name="username" id="username" class="form-control" placeholder="Username here" required>
+        <label for="username" class="form-label">Username <span class="text-secondary">Case sensitive</span></label>
+        <input type="text" name="username" id="username" class="form-control" placeholder="Username here" autocomplete="username" required>
         <div class="invalid-feedback">
           Please enter your username.
         </div>
@@ -94,7 +95,9 @@ if (isset($_POST["login"])) {
         <label for="remember" class="form-label">Remember Me</label>
       </div>
       <button type="submit" name="login" class="btn btn-primary">Login</button>
-      <a href="register.php" class="btn btn-secondary">Register</a>
+      <div class="mt-1">
+        <a href="register.php" class="text-secondary">Doesn't have an account? Register here</a>
+      </div>
       <?php if (isset($error)): ?>
         <div class="alert alert-danger mt-3">Incorrect username or password</div>
       <?php endif; ?>

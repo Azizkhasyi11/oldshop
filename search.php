@@ -27,17 +27,18 @@ $products = $product->searchProduct($search);
     <div class="row">
       <?php foreach ($products as $product): ?>
         <div class="col-md-3 mb-4">
-          <div class="card h-100 shadow-sm">
-            <img src="assets/<?= htmlspecialchars($product['image']) ?>" class="card-img-top"
-              alt="<?= htmlspecialchars($product['name']) ?>" onerror="this.src='https://via.placeholder.com/150'">
-            <div class="card-body">
-              <h5 class="card-title">
-                <a href="detail.php?id=<?= $product['id'] ?>"
-                  class="text-white"><?= htmlspecialchars($product['name']) ?></a>
-              </h5>
-              <p class="card-text">Rp. <?= number_format($product['price']) ?></p>
+          <a href="detail.php?id=<?= $product['id'] ?>" class="text-decoration-none">
+            <div class="card h-100 shadow-sm">
+              <img src="assets/<?= htmlspecialchars($product['image']) ?>" class="card-img-top"
+                alt="<?= htmlspecialchars($product['name']) ?>" onerror="this.src='https://via.placeholder.com/150'">
+              <div class="card-body">
+                <h5 class="card-title">
+                  <?= htmlspecialchars($product['name']) ?>
+                </h5>
+                <p class="card-text">Rp. <?= number_format($product['price']) ?></p>
+              </div>
             </div>
-          </div>
+          </a>
         </div>
       <?php endforeach; ?>
     </div>

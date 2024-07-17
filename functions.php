@@ -46,7 +46,7 @@ function register($data)
 {
     global $conn;
 
-    $username = strtolower(stripslashes($data["username"]));
+    $username = stripslashes($data["username"]);
     $firstname = stripslashes($data["firstname"]);
     $lastname = stripslashes($data["lastname"]);
     $password = mysqli_real_escape_string($conn, $data["password"]);
@@ -299,4 +299,54 @@ function isAdmin()
         return $user['is_admin'] == true;
     }
     return false;
+}
+
+function getUser($id)
+{
+    global $conn;
+    $result = mysqli_query($conn, "SELECT * FROM users WHERE id = $id");
+    return mysqli_fetch_assoc($result);
+}
+
+function getUsers()
+{
+    global $conn;
+    $result = mysqli_query($conn, "SELECT * FROM users");
+    $rows = [];
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $rows[] = $row;
+    }
+
+    return $rows;
+}
+
+// Edit user username, first name, last name, email, phone, address
+function editUser($data)
+{
+    global $conn;
+
+    $id = $data['id'];
+    $username = stripslashes($data["username"]);
+    $firstname = stripslashes($data["firstname"]);
+    $lastname = stripslashes($data["lastname"]);
+    $email = stripslashes($data["email"]);
+    $phone = stripslashes($data["phone"]);
+    $address = stripslashes($data["address"]);
+
+    // Check if username already exists
+    $result = mysqli_query($conn, "SELECT username FROM users WHERE username = '$username' AND id != $id");
+    if (mysqli_fetch_assoc($result)) {
+        echo "
+        <script>
+            alert('Username sudah terdaftar');
+        </script>
+        ";
+        return false;
+    }
+
+    // Update user data
+    mysqli_query($conn, "UPDATE users SET username = '$username', first_name = '$firstname', last_name = '$lastname', email = '$email', phone = '$phone', address = '$address' WHERE id = $id");
+
+    return mysqli_affected_rows($conn);
 }

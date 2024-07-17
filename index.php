@@ -1,7 +1,7 @@
 <?php
 ob_start();
 include 'header.php';
-// var_dump($_SESSION);
+
 ?>
 
 <!-- Hero Section -->
