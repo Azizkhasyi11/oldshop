@@ -59,7 +59,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Total</th>
-                <th>Action</th>
               </tr>
             </thead>
             <tbody class="table-group-divider">
@@ -71,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
                 <tr>
                   <td class="align-middle"><?= $i + 1 ?></td>
                   <td>
-                    <a href="detail.php?id=<?= htmlspecialchars($product['id']) ?>" class="text-dark fw-bold">
+                    <a href="detail.php?id=<?= htmlspecialchars($product['id']) ?>" class="text-white fw-bold">
                       <?= htmlspecialchars($product['name']) ?>
                     </a>
                   </td>

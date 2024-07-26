@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jul 15, 2024 at 01:33 PM
+-- Generation Time: Jul 26, 2024 at 05:02 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.7
 
@@ -26,6 +26,8 @@ SET time_zone = "+00:00";
 --
 -- Table structure for table `products`
 --
+-- Creation: Jul 15, 2024 at 01:22 PM
+--
 
 CREATE TABLE `products` (
   `id` int NOT NULL,
@@ -38,10 +40,38 @@ CREATE TABLE `products` (
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- RELATIONSHIPS FOR TABLE `products`:
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `transactions`
+--
+-- Creation: Jul 26, 2024 at 06:53 AM
+-- Last update: Jul 26, 2024 at 04:54 PM
+--
+
+CREATE TABLE `transactions` (
+  `trans_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `total_price` int NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `transactions`:
+--   `user_id`
+--       `users` -> `id`
+--
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `users`
+--
+-- Creation: Jul 17, 2024 at 02:19 AM
 --
 
 CREATE TABLE `users` (
@@ -50,9 +80,16 @@ CREATE TABLE `users` (
   `last_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `username` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   `password` varchar(300) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `phone` varchar(30) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `address` text COLLATE utf8mb4_general_ci,
   `register_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `is_admin` tinyint(1) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- RELATIONSHIPS FOR TABLE `users`:
+--
 
 --
 -- Indexes for dumped tables
@@ -65,10 +102,18 @@ ALTER TABLE `products`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `transactions`
+--
+ALTER TABLE `transactions`
+  ADD PRIMARY KEY (`trans_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -81,10 +126,26 @@ ALTER TABLE `products`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `transactions`
+--
+ALTER TABLE `transactions`
+  MODIFY `trans_id` int NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `transactions`
+--
+ALTER TABLE `transactions`
+  ADD CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

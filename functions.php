@@ -375,7 +375,7 @@ function checkout($data)
 
     // Insert order data
     $order_date = date("Y-m-d H:i:s");
-    mysqli_query($conn, "INSERT INTO orders VALUES(NULL, $user_id, '$total', '$order_date')");
+    mysqli_query($conn, "INSERT INTO transactions VALUES(NULL, $user_id, '$total', '$order_date')");
 
     // Clear cart
     unset($_SESSION['cart'][$user_id]);
