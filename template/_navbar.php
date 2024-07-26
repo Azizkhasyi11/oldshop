@@ -1,6 +1,9 @@
 <?php
 
-$user = getUser($_SESSION['user_id']);
+if (isset($_SESSION['login'])) {
+  $user = getUser($_SESSION['user_id']);
+}
+// $user = getUser($_SESSION['user_id'] ?? '');
 
 ?>
 
@@ -38,6 +41,7 @@ $user = getUser($_SESSION['user_id']);
             </a>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="/cart.php"><i class="bi bi-cart-fill"></i> Cart</a></li>
+              <li><a class="dropdown-item" href="/checkout.php"><i class="bi bi-box-seam"></i> Checkout</a></li>
               <li><a class="dropdown-item" href="/user.php"><i class="bi bi-person-fill-gear"></i> User Details</a></li>
             </ul>
           </li>
@@ -53,7 +57,9 @@ $user = getUser($_SESSION['user_id']);
             </li>
           <?php endif; ?>
           <li class="nav-item">
-            <a class="nav-link" href="/auth/logout.php">Logout</a>
+            <a class="nav-link" href="/auth/logout.php">
+              <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
           </li>
         <?php endif; ?>
         <?php if (basename($_SERVER['PHP_SELF']) !== 'search.php'): ?>

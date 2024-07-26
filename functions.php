@@ -49,6 +49,7 @@ function register($data)
     $username = stripslashes($data["username"]);
     $firstname = stripslashes($data["firstname"]);
     $lastname = stripslashes($data["lastname"]);
+    $email = stripslashes($data["email"]);
     $password = mysqli_real_escape_string($conn, $data["password"]);
     $password2 = mysqli_real_escape_string($conn, $data["password2"]);
     $register_date = date("Y-m-d H:i:s");
@@ -78,7 +79,7 @@ function register($data)
     $password = password_hash($password, PASSWORD_DEFAULT);
 
     // Insert user data
-    mysqli_query($conn, "INSERT INTO users VALUES(NULL, '$firstname', '$lastname', '$username',  '$password', '$register_date', NULL)");
+    mysqli_query($conn, "INSERT INTO users VALUES(NULL, '$firstname', '$lastname', '$username',  '$password', '$email', NULL, NULL, '$register_date', NULL)");
 
     return mysqli_affected_rows($conn);
 }
@@ -349,4 +350,35 @@ function editUser($data)
     mysqli_query($conn, "UPDATE users SET username = '$username', first_name = '$firstname', last_name = '$lastname', email = '$email', phone = '$phone', address = '$address' WHERE id = $id");
 
     return mysqli_affected_rows($conn);
+}
+
+// -----------------------------
+// |       Checkout            |
+// -----------------------------
+
+function checkout($data)
+{
+    global $conn;
+
+    $user_id = $data['user_id'];
+    $total = $data['total'];
+
+    // Check if cart is empty
+    if (empty($total)) {
+        echo "
+        <script>
+            alert('Cart is empty');
+        </script>
+        ";
+        return false;
+    }
+
+    // Insert order data
+    $order_date = date("Y-m-d H:i:s");
+    mysqli_query($conn, "INSERT INTO orders VALUES(NULL, $user_id, '$total', '$order_date')");
+
+    // Clear cart
+    unset($_SESSION['cart'][$user_id]);
+
+    return true;
 }

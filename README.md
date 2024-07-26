@@ -17,7 +17,8 @@ An assignment school project
 | User can remove product from cart | Done             |
 | User role (Admin)                 | Done             |
 | CRUD product                      | Done             |
-| User can checkout                 | Work in Progress |
+| User can checkout                 | Done             |
+| User can view order details       | Work in progress |
 
 ## Database Schema
 

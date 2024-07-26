@@ -18,5 +18,5 @@ require 'functions.php';
 </head>
 
 <body data-bs-theme="dark" class="d-flex flex-column min-vh-100">
-  <?php include ('template/_navbar.php'); ?>
+  <?php include 'template/_navbar.php'; ?>
   <div class="container my-5">
