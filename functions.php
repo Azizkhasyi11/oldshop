@@ -352,6 +352,54 @@ function editUser($data)
     return mysqli_affected_rows($conn);
 }
 
+function getUserOrders($user_id)
+{
+    global $conn;
+
+    $orders = [];
+
+    // Prepared statement to fetch transactions
+    $stmt = $conn->prepare("
+        SELECT t.trans_id, t.total_price, t.created_at, 
+        ti.product_id, ti.quantity, ti.price as item_price, 
+        p.name as product_name, p.description as product_description
+        FROM transactions t
+        LEFT JOIN transaction_items ti ON t.trans_id = ti.trans_id
+        LEFT JOIN products p ON ti.product_id = p.id
+        WHERE t.user_id = ?
+        ORDER BY t.created_at DESC, t.trans_id, p.name
+    ");
+
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Process results
+    while ($row = $result->fetch_assoc()) {
+        $trans_id = $row['trans_id'];
+        if (!isset($orders[$trans_id])) {
+            $orders[$trans_id] = [
+                'trans_id' => $trans_id,
+                'total_price' => $row['total_price'],
+                'created_at' => $row['created_at'],
+                'items' => []
+            ];
+        }
+        $orders[$trans_id]['items'][] = [
+            'product_id' => $row['product_id'],
+            'product_name' => $row['product_name'],
+            'product_description' => $row['product_description'],
+            'quantity' => $row['quantity'],
+            'item_price' => $row['item_price']
+        ];
+    }
+
+    $stmt->close();
+
+    return $orders;
+}
+
+
 // -----------------------------
 // |       Checkout            |
 // -----------------------------
@@ -373,12 +421,63 @@ function checkout($data)
         return false;
     }
 
-    // Insert order data
-    $order_date = date("Y-m-d H:i:s");
-    mysqli_query($conn, "INSERT INTO transactions VALUES(NULL, $user_id, '$total', '$order_date')");
+    // Start transaction
+    mysqli_begin_transaction($conn);
 
-    // Clear cart
-    unset($_SESSION['cart'][$user_id]);
+    try {
+        // Insert order data
+        $order_date = date("Y-m-d H:i:s");
+        $stmt = $conn->prepare("INSERT INTO transactions (user_id, total_price, created_at) VALUES (?, ?, ?)");
+        $stmt->bind_param("ids", $user_id, $total, $order_date);
+        $stmt->execute();
+        $trans_id = $stmt->insert_id;
+        $stmt->close();
 
-    return true;
+        foreach ($_SESSION['cart'][$user_id] as $product) {
+            $product_id = $product['product_id'];
+            $quantity = $product['quantity'];
+
+            // Edit the stock so that it decreases according to the quantity ordered
+            $product_detail = getProduct($product_id);
+            $stock = $product_detail['stock'] - $quantity;
+
+            if ($stock < 0) {
+                throw new Exception("Not enough stock for product ID: $product_id");
+            }
+
+            $stmt = $conn->prepare("UPDATE products SET stock = ? WHERE id = ?");
+            $stmt->bind_param("ii", $stock, $product_id);
+            $stmt->execute();
+            $stmt->close();
+
+            // Insert into transaction_items
+            $price = $product_detail['price'];
+            $stmt = $conn->prepare("INSERT INTO transaction_items (trans_id, product_id, quantity, price) VALUES (?, ?, ?, ?)");
+            $stmt->bind_param("iiid", $trans_id, $product_id, $quantity, $price);
+            $stmt->execute();
+            $stmt->close();
+        }
+
+        // Commit transaction
+        mysqli_commit($conn);
+
+        // Clear cart
+        unset($_SESSION['cart'][$user_id]);
+
+        return true;
+
+    } catch (Exception $e) {
+        // Rollback transaction
+        mysqli_rollback($conn);
+
+        // Log error
+        error_log($e->getMessage());
+
+        echo "
+        <script>
+            alert('Checkout failed: " . $e->getMessage() . "');
+        </script>
+        ";
+        return false;
+    }
 }

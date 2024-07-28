@@ -18,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     echo "<script>alert('User details updated successfully');</script>";
     // Reload user data after update
     $user = getUser($_SESSION['user_id']);
+    echo "<script>window.location.href = '/user.php';</script>";
   } else {
     echo "<script>alert('Failed to update user details');</script>";
   }
@@ -78,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           </tr>
           <tr>
             <th>Phone</th>
-            <td><input class="text-input" type="text" name="phone" value="<?= htmlspecialchars($user['phone'] ?? '') ?>"
+            <td><input class="text-input" type="tel" name="phone" value="<?= htmlspecialchars($user['phone'] ?? '') ?>"
                 required></td>
           </tr>
           <tr>
