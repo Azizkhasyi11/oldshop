@@ -388,7 +388,6 @@ function getUserOrders($user_id)
         $orders[$trans_id]['items'][] = [
             'product_id' => $row['product_id'],
             'product_name' => $row['product_name'],
-            'product_description' => $row['product_description'],
             'quantity' => $row['quantity'],
             'item_price' => $row['item_price']
         ];
@@ -442,6 +441,10 @@ function checkout($data)
             $stock = $product_detail['stock'] - $quantity;
 
             if ($stock < 0) {
+                // Remove the product from cart
+                unset($_SESSION['cart'][$user_id][$product_id]);
+
+                // Rollback transaction
                 throw new Exception("Not enough stock for product ID: $product_id");
             }
 

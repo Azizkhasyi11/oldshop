@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jul 26, 2024 at 05:02 PM
+-- Generation Time: Jul 29, 2024 at 07:28 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.7
 
@@ -26,8 +26,6 @@ SET time_zone = "+00:00";
 --
 -- Table structure for table `products`
 --
--- Creation: Jul 15, 2024 at 01:22 PM
---
 
 CREATE TABLE `products` (
   `id` int NOT NULL,
@@ -40,17 +38,10 @@ CREATE TABLE `products` (
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- RELATIONSHIPS FOR TABLE `products`:
---
-
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `transactions`
---
--- Creation: Jul 26, 2024 at 06:53 AM
--- Last update: Jul 26, 2024 at 04:54 PM
 --
 
 CREATE TABLE `transactions` (
@@ -60,18 +51,24 @@ CREATE TABLE `transactions` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- --------------------------------------------------------
+
 --
--- RELATIONSHIPS FOR TABLE `transactions`:
---   `user_id`
---       `users` -> `id`
+-- Table structure for table `transaction_items`
 --
+
+CREATE TABLE `transaction_items` (
+  `id` int NOT NULL,
+  `trans_id` int DEFAULT NULL,
+  `product_id` int DEFAULT NULL,
+  `quantity` int DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `users`
---
--- Creation: Jul 17, 2024 at 02:19 AM
 --
 
 CREATE TABLE `users` (
@@ -86,10 +83,6 @@ CREATE TABLE `users` (
   `register_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `is_admin` tinyint(1) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- RELATIONSHIPS FOR TABLE `users`:
---
 
 --
 -- Indexes for dumped tables
@@ -107,6 +100,14 @@ ALTER TABLE `products`
 ALTER TABLE `transactions`
   ADD PRIMARY KEY (`trans_id`),
   ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `transaction_items`
+--
+ALTER TABLE `transaction_items`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `transaction_items_ibfk_1` (`trans_id`),
+  ADD KEY `transaction_items_ibfk_2` (`product_id`);
 
 --
 -- Indexes for table `users`
@@ -132,6 +133,12 @@ ALTER TABLE `transactions`
   MODIFY `trans_id` int NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `transaction_items`
+--
+ALTER TABLE `transaction_items`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
@@ -146,6 +153,13 @@ ALTER TABLE `users`
 --
 ALTER TABLE `transactions`
   ADD CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `transaction_items`
+--
+ALTER TABLE `transaction_items`
+  ADD CONSTRAINT `transaction_items_ibfk_1` FOREIGN KEY (`trans_id`) REFERENCES `transactions` (`trans_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `transaction_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

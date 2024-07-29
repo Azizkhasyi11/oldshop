@@ -50,15 +50,28 @@ if ($detail):
         <h2><?= htmlspecialchars($detail['name']) ?></h2>
         <hr>
         <p><?= nl2br(htmlspecialchars($detail['description'])) ?></p> <!-- Convert \n to <br> -->
+        <hr>
         <p class="h4">Price: Rp. <?= htmlspecialchars(number_format($detail['price'])) ?></p>
         <p>Stock: <?= htmlspecialchars($detail['stock']) ?></p>
         <form action="" method="post">
           <input type="hidden" name="product_id" value="<?= $detail['id'] ?>">
           <div class="d-flex align-items-center my-3">
             <label for="quantity" class="me-2">Quantity:</label>
-            <input type="number" name="quantity" id="quantity" value="1" class="form-control w-25">
+            <?php if ($detail['stock'] > 1): ?>
+              <input type="number" name="quantity" class="form-control w-25" id="quantity" value="1" min="0"
+                max="<?= $detail['stock'] ?>">
+            <?php else: ?>
+              <input type="number" name="quantity" class="form-control w-25" id="quantity" value="0" min="0"
+                max="<?= $detail['stock'] ?>" disabled>
+            <?php endif; ?>
           </div>
-          <button type="submit" class="btn btn-primary"><i class="bi bi-cart-plus"></i> Add to Cart</button>
+          <?php if (isset($_SESSION['login'])): ?>
+            <?php if ($detail['stock'] > 0): ?>
+              <button type="submit" class="btn btn-primary"><i class="bi bi-cart-plus"></i> Add to Cart</button>
+            <?php else: ?>
+              <button type="button" class="btn btn-danger" disabled>Out of Stock</button>
+            <?php endif; ?>
+          <?php endif; ?>
         </form>
         <a href="/" class="btn btn-secondary mt-3">Return to Homepage</a>
       </div>

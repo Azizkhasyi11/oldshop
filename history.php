@@ -18,6 +18,7 @@ $orders = getUserOrders($user_id);
 
 <div class="container mt-5">
   <h2>Your Orders</h2>
+  <hr>
   <?php if (empty($orders)): ?>
     <hr>
     <div class="alert alert-warning" role="alert">
@@ -31,7 +32,8 @@ $orders = getUserOrders($user_id);
             <h2 class="mb-0">
               <button class="btn btn-outline-info" type="button" data-toggle="collapse" data-target="#collapse<?= $index ?>"
                 aria-expanded="true" aria-controls="collapse<?= $index ?>">
-                Order ID: <?= $order['trans_id'] ?> - Total: <?= $order['total_price'] ?> - Created At:
+                Order ID: <?= $order['trans_id'] ?> - Total: <?= 'Rp. ' . number_format($order['total_price']) ?> - Created
+                At:
                 <?= $order['created_at'] ?>
               </button>
             </h2>
@@ -47,7 +49,6 @@ $orders = getUserOrders($user_id);
                     <tr>
                       <th>No</th>
                       <th>Product Name</th>
-                      <th>Description</th>
                       <th>Quantity</th>
                       <th>Price</th>
                     </tr>
@@ -56,10 +57,13 @@ $orders = getUserOrders($user_id);
                     <?php foreach ($order['items'] as $item_index => $item): ?>
                       <tr>
                         <td><?= $item_index + 1 ?></td>
-                        <td><?= $item['product_name'] ?></td>
-                        <td><?= $item['product_description'] ?></td>
+                        <td>
+                          <a href="<?= $item['product_id'] ?>" class="text-white">
+                            <?= $item['product_name'] ?>
+                          </a>
+                        </td>
                         <td><?= $item['quantity'] ?></td>
-                        <td><?= $item['item_price'] ?></td>
+                        <td><?= 'Rp. ' . number_format($item['item_price']) ?></td>
                       </tr>
                     <?php endforeach; ?>
                   </tbody>
