@@ -23,8 +23,8 @@ An assignment school project
 ## Database Schema
 
 Database dump can be found in `database` folder at `oldshop.sql`
-![image](https://github.com/user-attachments/assets/d729b53b-3b59-4161-93ef-50cbab83e6c0)
-More detail: [Database Schema](https://dbdiagram.io/d/669536f69939893daef8a2e3)
+
+<iframe width="560" height="315" src='https://dbdiagram.io/e/669536f69939893daef8a2e3/669536fa9939893daef8a390'> </iframe>
 
 ## Authors
 
